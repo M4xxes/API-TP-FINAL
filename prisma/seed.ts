@@ -14,18 +14,21 @@ async function main() {
   await prisma.category.createMany({
     data: [
       {
+        id: 1,
         name: "Informatique",
         description: "Ordinateurs, périphériques et accessoires",
       },
       {
+        id: 2,
         name: "Maison",
         description: "Articles pour la maison et la décoration",
       },
       {
+        id: 3,
         name: "Sport",
         description: "Equipements et vêtements de sport",
       },
-    ]
+    ],
   });
 
   const catInfo = await prisma.category.findFirst({
@@ -50,6 +53,8 @@ async function main() {
       { name: "Clavier mécanique", type: "INFORMATIQUE_ACCESSOIRE", price: 79.9, stock: 30, categoryId: catInfo.id },
       { name: "Ecran 27\"", type: "INFORMATIQUE_ECRAN", price: 199.0, stock: 15, categoryId: catInfo.id },
       { name: "Station d'accueil USB-C", type: "INFORMATIQUE_ACCESSOIRE", price: 149.0, stock: 12, categoryId: catInfo.id },
+      { name: "Laptop 16\" Pro", type: "INFORMATIQUE_LAPTOP", price: 1499.99, stock: 5, categoryId: catInfo.id },
+      { name: "Casque audio Bluetooth", type: "INFORMATIQUE_ACCESSOIRE", price: 129.0, stock: 25, categoryId: catInfo.id },
       { name: "Aspirateur", type: "MAISON_APPAREIL", price: 129.0, stock: 20, categoryId: catHome.id },
       { name: "Lampe de salon", type: "MAISON_DECO", price: 39.9, stock: 40, categoryId: catHome.id },
       { name: "Coussin déco", type: "MAISON_DECO", price: 19.99, stock: 60, categoryId: catHome.id },
@@ -57,6 +62,8 @@ async function main() {
       { name: "Canapé 3 places", type: "MAISON_MOBILIER", price: 599.0, stock: 5, categoryId: catHome.id },
       { name: "Chaise de bureau", type: "MAISON_MOBILIER", price: 89.9, stock: 25, categoryId: catHome.id },
       { name: "Machine à café filtre", type: "MAISON_APPAREIL", price: 79.0, stock: 14, categoryId: catHome.id },
+      { name: "Robot cuiseur", type: "MAISON_APPAREIL", price: 349.0, stock: 6, categoryId: catHome.id },
+      { name: "Rideaux occultants", type: "MAISON_DECO", price: 59.9, stock: 18, categoryId: catHome.id },
       { name: "Vélo route", type: "SPORTS_EQUIPMENT", price: 999.0, stock: 4, categoryId: catSport.id },
       { name: "Chaussures running", type: "SPORTS_APPAREL", price: 79.0, stock: 35, categoryId: catSport.id },
       { name: "Tapis de yoga", type: "SPORTS_ACCESSORY", price: 29.9, stock: 40, categoryId: catSport.id },
@@ -67,6 +74,8 @@ async function main() {
       { name: "Short de sport", type: "SPORTS_APPAREL", price: 29.5, stock: 28, categoryId: catSport.id },
       { name: "Gants de fitness", type: "SPORTS_ACCESSORY", price: 19.5, stock: 30, categoryId: catSport.id },
       { name: "Sac de sport", type: "SPORTS_ACCESSORY", price: 49.9, stock: 20, categoryId: catSport.id },
+      { name: "Vélo VTT", type: "SPORTS_EQUIPMENT", price: 799.0, stock: 3, categoryId: catSport.id },
+      { name: "Collant de running", type: "SPORTS_APPAREL", price: 39.9, stock: 24, categoryId: catSport.id },
     ],
   });
 

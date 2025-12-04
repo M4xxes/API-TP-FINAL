@@ -341,10 +341,15 @@
           </div>
 
           <div class="row">
-            <div class="field">
-              <label>categoryId</label>
-              <input id="categoryId" type="number" placeholder="1" />
-            </div>
+          <div class="field">
+            <label>Catégorie (filter)</label>
+            <select id="categoryId">
+              <option value="">(toutes les catégories)</option>
+              <option value="1">1 - Informatique</option>
+              <option value="2">2 - Maison</option>
+              <option value="3">3 - Sport</option>
+            </select>
+          </div>
             <div class="field">
               <label>priceMin</label>
               <input id="priceMin" type="number" step="0.01" />
@@ -374,11 +379,18 @@
             </div>
           <div class="field">
             <label>Type de produit</label>
-            <input
-              id="typeFilter"
-              type="text"
-              placeholder="INFORMATIQUE_LAPTOP"
-            />
+            <select id="typeFilter">
+              <option value="">(tous les types)</option>
+              <option value="INFORMATIQUE_LAPTOP">INFORMATIQUE_LAPTOP</option>
+              <option value="INFORMATIQUE_ACCESSOIRE">INFORMATIQUE_ACCESSOIRE</option>
+              <option value="INFORMATIQUE_ECRAN">INFORMATIQUE_ECRAN</option>
+              <option value="MAISON_APPAREIL">MAISON_APPAREIL</option>
+              <option value="MAISON_DECO">MAISON_DECO</option>
+              <option value="MAISON_MOBILIER">MAISON_MOBILIER</option>
+              <option value="SPORTS_EQUIPMENT">SPORTS_EQUIPMENT</option>
+              <option value="SPORTS_APPAREL">SPORTS_APPAREL</option>
+              <option value="SPORTS_ACCESSORY">SPORTS_ACCESSORY</option>
+            </select>
           </div>
           </div>
 
@@ -409,12 +421,27 @@
               <input id="create-stock" type="number" placeholder="10" />
             </div>
             <div class="field">
-              <label>categoryId</label>
-              <input id="create-category" type="number" placeholder="1" />
+              <label>Catégorie</label>
+              <select id="create-category">
+                <option value="1">1 - Informatique</option>
+                <option value="2">2 - Maison</option>
+                <option value="3">3 - Sport</option>
+              </select>
             </div>
             <div class="field">
               <label>Type</label>
-              <input id="create-type" type="text" placeholder="INFORMATIQUE_LAPTOP" />
+              <select id="create-type">
+                <option value="">STANDARD (par défaut)</option>
+                <option value="INFORMATIQUE_LAPTOP">INFORMATIQUE_LAPTOP</option>
+                <option value="INFORMATIQUE_ACCESSOIRE">INFORMATIQUE_ACCESSOIRE</option>
+                <option value="INFORMATIQUE_ECRAN">INFORMATIQUE_ECRAN</option>
+                <option value="MAISON_APPAREIL">MAISON_APPAREIL</option>
+                <option value="MAISON_DECO">MAISON_DECO</option>
+                <option value="MAISON_MOBILIER">MAISON_MOBILIER</option>
+                <option value="SPORTS_EQUIPMENT">SPORTS_EQUIPMENT</option>
+                <option value="SPORTS_APPAREL">SPORTS_APPAREL</option>
+                <option value="SPORTS_ACCESSORY">SPORTS_ACCESSORY</option>
+              </select>
             </div>
           </div>
           <div>
