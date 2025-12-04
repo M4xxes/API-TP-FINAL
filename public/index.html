@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Marketplace API Tester</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #0f172a;
+        --bg-card: #020617;
+        --border: #1e293b;
+        --accent: #3b82f6;
+        --accent-soft: #1d4ed8;
+        --text: #e5e7eb;
+        --muted: #9ca3af;
+        --danger: #ef4444;
+        --success: #22c55e;
+        --radius: 10px;
+      }
+      * {
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          sans-serif;
+      }
+      body {
+        margin: 0;
+        padding: 24px;
+        background: radial-gradient(circle at top, #1f2937, #020617 60%);
+        color: var(--text);
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 26px;
+      }
+      h2 {
+        margin: 0 0 12px;
+        font-size: 18px;
+      }
+      .subtitle {
+        color: var(--muted);
+        margin-bottom: 24px;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 320px) minmax(0, 1.4fr);
+        gap: 20px;
+      }
+      @media (max-width: 900px) {
+        .layout {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+      .card {
+        background: linear-gradient(135deg, #020617, #020617);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        padding: 16px 18px 18px;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+      }
+      .card + .card {
+        margin-top: 12px;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 7px;
+        border: 1px solid var(--border);
+        background: #020617;
+        color: var(--text);
+        font-size: 13px;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: 1px solid var(--accent);
+        border-color: var(--accent);
+      }
+      textarea {
+        min-height: 80px;
+        resize: vertical;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .row-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .field {
+        margin-bottom: 10px;
+      }
+      button {
+        border-radius: 999px;
+        border: none;
+        padding: 7px 14px;
+        font-size: 13px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: radial-gradient(circle at top left, #3b82f6, #1d4ed8);
+        color: white;
+      }
+      button.secondary {
+        background: none;
+        border: 1px solid var(--border);
+        color: var(--muted);
+      }
+      button.danger {
+        background: radial-gradient(circle at top left, #f97373, #b91c1c);
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: default;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 12px;
+      }
+      .token-badge {
+        font-size: 11px;
+        padding: 4px 7px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--muted);
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #22c55e;
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .pill {
+        display: inline-flex;
+        padding: 3px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        font-size: 11px;
+        color: var(--muted);
+        gap: 4px;
+        align-items: center;
+      }
+      .status {
+        font-size: 12px;
+        margin-top: 6px;
+      }
+      .status.ok {
+        color: var(--success);
+      }
+      .status.err {
+        color: var(--danger);
+      }
+      .response {
+        margin-top: 6px;
+        border-radius: 8px;
+        background: #020617;
+        border: 1px solid var(--border);
+        padding: 8px;
+        font-size: 12px;
+        max-height: 260px;
+        overflow: auto;
+      }
+      .response pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .summary-card {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+      .summary-title {
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .summary-value {
+        font-size: 20px;
+        font-weight: 600;
+      }
+      .products-list {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+      }
+      .product-card {
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        padding: 12px;
+        background: rgba(2, 6, 23, 0.9);
+      }
+      .product-title {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      .badge {
+        display: inline-flex;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        border: 1px solid rgba(59, 130, 246, 0.4);
+        color: var(--accent);
+        margin-top: 6px;
+      }
+      .empty-state {
+        margin-top: 12px;
+        border-radius: 10px;
+        padding: 14px;
+        text-align: center;
+        border: 1px dashed var(--border);
+        color: var(--muted);
+      }
+      .small {
+        font-size: 11px;
+      }
+      .tag {
+        display: inline-flex;
+        padding: 2px 6px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        font-size: 10px;
+        color: var(--muted);
+        margin-left: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <header style="margin-bottom: 18px">
+      <h1>Marketplace API Tester</h1>
+      <div class="subtitle">
+        Interface de test pour ton TP : login, tokens, profil et catalogue
+        produits (pagination, tri, filtres, projection, inclusion).
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Colonne Auth -->
+      <div>
+        <div class="card">
+          <h2>1. Authentification</h2>
+          <div class="muted" style="margin-bottom: 12px">
+            Utilise les utilisateurs seedés
+            <code>user1@example.com</code> / <code>password123</code>
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input id="email" type="email" value="user1@example.com" />
+          </div>
+          <div class="field">
+            <label>Mot de passe</label>
+            <input id="password" type="password" value="password123" />
+          </div>
+          <div style="display: flex; gap: 8px; margin-top: 8px">
+            <button id="btn-login">
+              🔐 Login
+            </button>
+            <button id="btn-me" class="secondary">
+              👤 /auth/me
+            </button>
+          </div>
+          <div style="margin-top: 10px">
+            <span class="token-badge" id="token-status">
+              <span class="dot"></span> Aucun token encore
+            </span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>2. Tokens</h2>
+          <div class="field">
+            <label>
+              Access Token
+              <span class="tag">Bearer</span>
+            </label>
+            <textarea id="access-token" readonly></textarea>
+          </div>
+          <div class="field">
+            <label>Refresh Token</label>
+            <textarea id="refresh-token" readonly></textarea>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap">
+            <button id="btn-refresh" class="secondary">
+              ♻️ /auth/refresh
+            </button>
+            <button id="btn-logout" class="danger">
+              🚪 /auth/logout
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne Catalogue / Réponses -->
+      <div>
+        <div class="card">
+          <h2>3. Requête /products</h2>
+          <div class="row row-3">
+            <div class="field">
+              <label>Page</label>
+              <input id="page" type="number" value="1" min="1" />
+            </div>
+            <div class="field">
+              <label>Limit</label>
+              <input id="limit" type="number" value="10" min="1" />
+            </div>
+            <div class="field">
+              <label>Sort (ex: -price, name)</label>
+              <input id="sort" type="text" value="-price" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>categoryId</label>
+              <input id="categoryId" type="number" placeholder="1" />
+            </div>
+            <div class="field">
+              <label>priceMin</label>
+              <input id="priceMin" type="number" step="0.01" />
+            </div>
+            <div class="field">
+              <label>priceMax</label>
+              <input id="priceMax" type="number" step="0.01" />
+            </div>
+          </div>
+
+        <div class="row">
+            <div class="field">
+              <label>Fields (projection)</label>
+              <input
+                id="fields"
+                type="text"
+                placeholder="name,price,stock"
+                value="name,price,stock"
+              />
+            </div>
+            <div class="field">
+              <label>Include</label>
+              <select id="include">
+                <option value="">(aucun)</option>
+                <option value="category">category</option>
+              </select>
+            </div>
+          <div class="field">
+            <label>Type de produit</label>
+            <input
+              id="typeFilter"
+              type="text"
+              placeholder="INFORMATIQUE_LAPTOP"
+            />
+          </div>
+          </div>
+
+          <div style="margin-top: 8px">
+            <button id="btn-products">
+              🛒 GET /products
+            </button>
+            <span class="muted small">
+              L’access token sera automatiquement mis dans
+              <code>Authorization: Bearer ...</code>
+            </span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>4. Créer un produit</h2>
+          <div class="field">
+            <label>Nom</label>
+            <input id="create-name" type="text" placeholder="Nouvel article" />
+          </div>
+          <div class="row">
+            <div class="field">
+              <label>Prix (€)</label>
+              <input id="create-price" type="number" step="0.01" placeholder="99.99" />
+            </div>
+            <div class="field">
+              <label>Stock</label>
+              <input id="create-stock" type="number" placeholder="10" />
+            </div>
+            <div class="field">
+              <label>categoryId</label>
+              <input id="create-category" type="number" placeholder="1" />
+            </div>
+            <div class="field">
+              <label>Type</label>
+              <input id="create-type" type="text" placeholder="INFORMATIQUE_LAPTOP" />
+            </div>
+          </div>
+          <div>
+            <button id="btn-create">
+              ➕ POST /products
+            </button>
+            <span class="muted small">Token requis</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Réponse</h2>
+          <div id="http-meta" class="small muted">
+            En attente d’appel...
+          </div>
+          <div id="http-status" class="status"></div>
+          <div class="response">
+            <pre id="http-body">{}</pre>
+          </div>
+          <div id="products-extras" hidden>
+            <div id="products-summary" class="summary-grid"></div>
+            <div id="products-list" class="products-list"></div>
+            <div id="products-empty" class="empty-state" hidden>
+              Aucun produit pour les critères sélectionnés.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const baseUrl = window.location.origin;
+
+      let accessToken = "";
+      let refreshToken = "";
+
+      const els = {
+        email: document.getElementById("email"),
+        password: document.getElementById("password"),
+        btnLogin: document.getElementById("btn-login"),
+        btnMe: document.getElementById("btn-me"),
+        btnRefresh: document.getElementById("btn-refresh"),
+        btnLogout: document.getElementById("btn-logout"),
+        tokenStatus: document.getElementById("token-status"),
+        accessToken: document.getElementById("access-token"),
+        refreshToken: document.getElementById("refresh-token"),
+        page: document.getElementById("page"),
+        limit: document.getElementById("limit"),
+        sort: document.getElementById("sort"),
+        categoryId: document.getElementById("categoryId"),
+        priceMin: document.getElementById("priceMin"),
+        priceMax: document.getElementById("priceMax"),
+        fields: document.getElementById("fields"),
+        include: document.getElementById("include"),
+        typeFilter: document.getElementById("typeFilter"),
+        btnProducts: document.getElementById("btn-products"),
+        createName: document.getElementById("create-name"),
+        createPrice: document.getElementById("create-price"),
+        createStock: document.getElementById("create-stock"),
+        createCategory: document.getElementById("create-category"),
+        createType: document.getElementById("create-type"),
+        btnCreate: document.getElementById("btn-create"),
+        httpMeta: document.getElementById("http-meta"),
+        httpStatus: document.getElementById("http-status"),
+        httpBody: document.getElementById("http-body"),
+        productsExtras: document.getElementById("products-extras"),
+        productsSummary: document.getElementById("products-summary"),
+        productsList: document.getElementById("products-list"),
+        productsEmpty: document.getElementById("products-empty"),
+      };
+
+      function setLoading(isLoading) {
+        [
+          "btnLogin",
+          "btnMe",
+          "btnRefresh",
+          "btnLogout",
+          "btnProducts",
+          "btnCreate",
+        ].forEach((k) => {
+          els[k].disabled = isLoading;
+        });
+      }
+
+      function updateTokenDisplay() {
+        els.accessToken.value = accessToken || "";
+        els.refreshToken.value = refreshToken || "";
+        if (accessToken) {
+          els.tokenStatus.innerHTML =
+            '<span class="dot"></span> Access token chargé';
+        } else {
+          els.tokenStatus.innerHTML =
+            '<span class="dot" style="background:#9ca3af"></span> Aucun token';
+        }
+      }
+
+      function showResponse(method, url, status, body) {
+        els.httpMeta.textContent = method + " " + url;
+        if (status == null) {
+          els.httpStatus.textContent = "";
+          els.httpStatus.className = "status";
+        } else {
+          els.httpStatus.textContent = "HTTP " + status;
+          els.httpStatus.className =
+            "status " + (status >= 200 && status < 300 ? "ok" : "err");
+        }
+        try {
+          els.httpBody.textContent = JSON.stringify(body, null, 2);
+        } catch {
+          els.httpBody.textContent = String(body);
+        }
+
+        if (method === "GET" && url.includes("/products")) {
+          updateProductsView(body);
+        } else {
+          resetProductsView();
+        }
+      }
+
+      function resetProductsView() {
+        els.productsExtras.hidden = true;
+        els.productsSummary.innerHTML = "";
+        els.productsList.innerHTML = "";
+        els.productsEmpty.hidden = true;
+      }
+
+      function updateProductsView(data) {
+        if (!data || typeof data !== "object") {
+          resetProductsView();
+          return;
+        }
+        els.productsExtras.hidden = false;
+
+        const summaryCards = [
+          { label: "Page", value: data.page ?? "-" },
+          { label: "Par page", value: data.limit ?? "-" },
+          { label: "Total produits", value: data.total ?? "-" },
+          { label: "Total pages", value: data.totalPages ?? "-" },
+        ]
+          .map(
+            (item) => `
+          <div class="summary-card">
+            <div class="summary-title">${item.label}</div>
+            <div class="summary-value">${item.value}</div>
+          </div>`
+          )
+          .join("");
+        els.productsSummary.innerHTML = summaryCards;
+
+        const items = Array.isArray(data.items) ? data.items : [];
+        if (!items.length) {
+          els.productsEmpty.hidden = false;
+          els.productsList.innerHTML = "";
+          return;
+        }
+
+        els.productsEmpty.hidden = true;
+        els.productsList.innerHTML = items
+          .map((item) => {
+            const category = item.category
+              ? `<div class="badge">Catégorie: ${
+                  item.category.name ?? `ID ${item.category.id}`
+                }</div>`
+              : "";
+            return `
+            <div class="product-card">
+              <div class="product-title">${item.name ?? "Produit"}</div>
+              ${
+                item.type
+                  ? `<div>Type: <strong>${item.type}</strong></div>`
+                  : ""
+              }
+              ${
+                item.price != null
+                  ? `<div>Prix: <strong>${item.price} €</strong></div>`
+                  : ""
+              }
+              ${
+                item.stock != null
+                  ? `<div>Stock: <strong>${item.stock}</strong></div>`
+                  : ""
+              }
+              ${category}
+            </div>`;
+          })
+          .join("");
+      }
+
+      async function apiCall(method, path, opts = {}) {
+        const url = baseUrl + path;
+        const headers = { "Content-Type": "application/json" };
+        if (opts.auth && accessToken) {
+          headers["Authorization"] = "Bearer " + accessToken;
+        }
+        const body =
+          opts.body != null ? JSON.stringify(opts.body) : undefined;
+
+        setLoading(true);
+        showResponse(method, url, null, "Chargement...");
+        try {
+          const res = await fetch(url, { method, headers, body });
+          const text = await res.text();
+          let data;
+          try {
+            data = text ? JSON.parse(text) : null;
+          } catch {
+            data = text;
+          }
+          showResponse(method, url, res.status, data);
+          return { res, data };
+        } catch (e) {
+          showResponse(method, url, 0, { error: String(e) });
+          throw e;
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      // Handlers
+      els.btnLogin.addEventListener("click", async () => {
+        const email = els.email.value.trim();
+        const password = els.password.value;
+        const { res, data } = await apiCall("POST", "/auth/login", {
+          body: { email, password },
+        });
+        if (res.ok) {
+          accessToken = data.accessToken;
+          refreshToken = data.refreshToken;
+          updateTokenDisplay();
+        }
+      });
+
+      els.btnMe.addEventListener("click", async () => {
+        await apiCall("GET", "/auth/me", { auth: true });
+      });
+
+      els.btnRefresh.addEventListener("click", async () => {
+        if (!refreshToken) {
+          alert("Pas de refresh token disponible.");
+          return;
+        }
+        const { res, data } = await apiCall("POST", "/auth/refresh", {
+          body: { refreshToken },
+        });
+        if (res.ok) {
+          accessToken = data.accessToken;
+          refreshToken = data.refreshToken;
+          updateTokenDisplay();
+        }
+      });
+
+      els.btnLogout.addEventListener("click", async () => {
+        if (!refreshToken) {
+          alert("Pas de refresh token disponible.");
+          return;
+        }
+        const { res } = await apiCall("POST", "/auth/logout", {
+          body: { refreshToken },
+        });
+        if (res.status === 204) {
+          accessToken = "";
+          refreshToken = "";
+          updateTokenDisplay();
+        }
+      });
+
+      els.btnProducts.addEventListener("click", async () => {
+        const params = new URLSearchParams();
+        if (els.page.value) params.set("page", els.page.value);
+        if (els.limit.value) params.set("limit", els.limit.value);
+        if (els.sort.value) params.set("sort", els.sort.value);
+        if (els.categoryId.value) params.set("categoryId", els.categoryId.value);
+        if (els.priceMin.value) params.set("priceMin", els.priceMin.value);
+        if (els.priceMax.value) params.set("priceMax", els.priceMax.value);
+        if (els.fields.value) params.set("fields", els.fields.value);
+        if (els.include.value) params.set("include", els.include.value);
+        if (els.typeFilter.value) params.set("type", els.typeFilter.value);
+
+        await apiCall("GET", "/products?" + params.toString(), {
+          auth: true,
+        });
+      });
+
+      els.btnCreate.addEventListener("click", async () => {
+        const body = {
+          name: els.createName.value.trim(),
+          price: parseFloat(els.createPrice.value),
+          stock: parseInt(els.createStock.value, 10),
+          categoryId: parseInt(els.createCategory.value, 10),
+          type: els.createType.value.trim(),
+        };
+
+        await apiCall("POST", "/products", {
+          auth: true,
+          body,
+        });
+      });
+
+      // init
+      updateTokenDisplay();
+    </script>
+  </body>
+</html>
+
+

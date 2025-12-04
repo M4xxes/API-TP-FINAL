@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  products    Product[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String
+  type        String    @default("STANDARD")
+  price       Float
+  stock       Int
+  createdAt   DateTime  @default(now())
+
+  categoryId  Int
+  category    Category  @relation(fields: [categoryId], references: [id])
+}
+
+model User {
+  id        Int           @id @default(autoincrement())
+  email     String        @unique
+  password  String
+  role      String        @default("USER")
+  createdAt DateTime      @default(now())
+
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  id         Int      @id @default(autoincrement())
+  token      String   @unique
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  revoked    Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+}
